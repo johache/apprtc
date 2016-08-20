@@ -252,7 +252,9 @@ AppController.prototype.hangup_ = function() {
   // Reset key and mouse event handlers.
   document.onkeypress = null;
   window.onmousemove = null;
-  this.remoteVideo_.srcObject = null;
+  this.remoteVideo_ = attachMediaStream(this.remoteVideo_, null);
+  this.remoteVideoStream = null;
+  // this.remoteVideo_.srcObject = null;
 };
 
 AppController.prototype.onRemoteHangup_ = function() {
@@ -288,7 +290,8 @@ AppController.prototype.waitForRemoteVideo_ = function() {
 AppController.prototype.onRemoteStreamAdded_ = function(stream) {
   this.deactivate_(this.sharingDiv_);
   trace('Remote stream added.');
-  this.remoteVideo_.srcObject = stream;
+  this.remoteVideo = attachMediaStream(this.remoteVideo, stream);
+  this.remoteVideoStream = stream;
 
   if (this.remoteVideoResetTimer_) {
     clearTimeout(this.remoteVideoResetTimer_);
@@ -307,7 +310,9 @@ AppController.prototype.onLocalStreamAdded_ = function(stream) {
 
 AppController.prototype.attachLocalStream_ = function() {
   trace('Attaching local stream.');
-  this.localVideo_.srcObject = this.localStream_;
+  this.localVideo_ = attachMediaStream(this.localVideo_, this.localStream_);
+  this.localVideoStream = this.localStream_;
+  // this.localVideo_.srcObject = this.localStream_;
 
   this.displayStatus_('');
   this.activate_(this.localVideo_);
@@ -330,15 +335,19 @@ AppController.prototype.transitionToActive_ = function() {
       'ms.');
 
   // Prepare the remote video and PIP elements.
-  trace('reattachMediaStream: ' + this.localVideo_.srcObject);
-  this.miniVideo_.srcObject = this.localVideo_.srcObject;
+  // trace('reattachMediaStream: ' + this.localVideo_.srcObject);
+  // this.miniVideo_.srcObject = this.localVideo_.srcObject;
+  this.miniVideo_ = attachMediaStream(this.miniVideo_, this.localVideoStream);
+  this.miniVideo_ = this.localVideoSteam;
 
   // Transition opacity from 0 to 1 for the remote and mini videos.
   this.activate_(this.remoteVideo_);
   this.activate_(this.miniVideo_);
   // Transition opacity from 1 to 0 for the local video.
   this.deactivate_(this.localVideo_);
-  this.localVideo_.srcObject = null;
+  // this.localVideo_.srcObject = null;
+  this.localVideo_ = attachMediaStream(this.localVideo_, null);
+  this.localVideoStream = null;
   // Rotate the div containing the videos 180 deg with a CSS transform.
   this.activate_(this.videosDiv_);
   this.show_(this.hangupSvg_);
@@ -357,13 +366,17 @@ AppController.prototype.transitionToWaiting_ = function() {
     this.remoteVideoResetTimer_ = setTimeout(function() {
       this.remoteVideoResetTimer_ = null;
       trace('Resetting remoteVideo src after transitioning to waiting.');
-      this.remoteVideo_.srcObject = null;
+      this.remoteVideo_ = attachMediaStream(this.remoteVideo_, null);
+      this.remoteVideoStream = null;
+      // this.remoteVideo_.srcObject = null;
     }.bind(this), 800);
   }
 
   // Set localVideo.srcObject now so that the local stream won't be lost if the
   // call is restarted before the timeout.
-  this.localVideo_.srcObject = this.miniVideo_.srcObject;
+  // this.localVideo_.srcObject = this.miniVideo_.srcObject;
+  this.localVideo_ = attachMediaStream(this.localVideo_, this.miniVideoStream);
+  this.localVideoStream = this.miniVideoStream;
 
   // Transition opacity from 0 to 1 for the local video.
   this.activate_(this.localVideo_);
@@ -501,19 +514,27 @@ AppController.prototype.toggleMiniVideo_ = function() {
 };
 
 AppController.prototype.hide_ = function(element) {
-  element.classList.add('hidden');
+  element.className += ' hidden';
+  // element.classList.add('hidden');
 };
 
 AppController.prototype.show_ = function(element) {
-  element.classList.remove('hidden');
+  // element.classList.remove('hidden');
+  element.className =
+   element.className.replace
+      ( /(?:^|\s)hidden(?!\S)/g , '' );
 };
 
 AppController.prototype.activate_ = function(element) {
-  element.classList.add('active');
+  element.className += ' active';
+  // element.classList.add('active');
 };
 
 AppController.prototype.deactivate_ = function(element) {
-  element.classList.remove('active');
+  // element.classList.remove('active');
+  element.className =
+   element.className.replace
+      ( /(?:^|\s)active(?!\S)/g , '' );
 };
 
 AppController.prototype.showIcons_ = function() {

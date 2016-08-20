@@ -294,10 +294,10 @@ Call.prototype.connectToRoom_ = function(roomId) {
   // Asynchronously open a WebSocket connection to WSS.
   // TODO(jiayl): We don't need to wait for the signaling channel to open before
   // start signaling.
-  var channelPromise = this.channel_.open().catch(function(error) {
-    this.onError_('WebSocket open error: ' + error.message);
-    return Promise.reject(error);
-  }.bind(this));
+  var channelPromise = this.channel_.open(); //.catch(function(error) {
+    // this.onError_('WebSocket open error: ' + error.message);
+    // return Promise.reject(error);
+  // }.bind(this));
 
   // Asynchronously join the room.
   var joinPromise =
