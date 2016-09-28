@@ -38,6 +38,7 @@ var PeerConnectionClient = function(params, startTime) {
       params.peerConnectionConfig, params.peerConnectionConstraints);
   this.pc_.onicecandidate = this.onIceCandidate_.bind(this);
   this.pc_.ontrack = this.onRemoteStreamAdded_.bind(this);
+  this.pc_.onaddstream = this.onRemoteStreamAdded_.bind(this);
   this.pc_.onremovestream = trace.bind(null, 'Remote stream removed.');
   this.pc_.onsignalingstatechange = this.onSignalingStateChanged_.bind(this);
   this.pc_.oniceconnectionstatechange =
@@ -388,7 +389,7 @@ PeerConnectionClient.prototype.recordIceCandidate_ =
 
 PeerConnectionClient.prototype.onRemoteStreamAdded_ = function(event) {
   if (this.onremotestreamadded) {
-    this.onremotestreamadded(event.streams[0]);
+    this.onremotestreamadded(event.stream);
   }
 };
 

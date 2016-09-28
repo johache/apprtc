@@ -290,7 +290,7 @@ AppController.prototype.waitForRemoteVideo_ = function() {
 AppController.prototype.onRemoteStreamAdded_ = function(stream) {
   this.deactivate_(this.sharingDiv_);
   trace('Remote stream added.');
-  this.remoteVideo = attachMediaStream(this.remoteVideo, stream);
+  this.remoteVideo_ = attachMediaStream(this.remoteVideo_, stream);
   this.remoteVideoStream = stream;
 
   if (this.remoteVideoResetTimer_) {
@@ -338,7 +338,7 @@ AppController.prototype.transitionToActive_ = function() {
   // trace('reattachMediaStream: ' + this.localVideo_.srcObject);
   // this.miniVideo_.srcObject = this.localVideo_.srcObject;
   this.miniVideo_ = attachMediaStream(this.miniVideo_, this.localVideoStream);
-  this.miniVideo_ = this.localVideoSteam;
+  this.miniVideoStream = this.localVideoSteam;
 
   // Transition opacity from 0 to 1 for the remote and mini videos.
   this.activate_(this.remoteVideo_);
@@ -514,27 +514,27 @@ AppController.prototype.toggleMiniVideo_ = function() {
 };
 
 AppController.prototype.hide_ = function(element) {
-  element.className += ' hidden';
-  // element.classList.add('hidden');
+  // element.className += ' hidden';
+  element.classList.add('hidden');
 };
 
 AppController.prototype.show_ = function(element) {
-  // element.classList.remove('hidden');
-  element.className =
-   element.className.replace
-      ( /(?:^|\s)hidden(?!\S)/g , '' );
+  element.classList.remove('hidden');
+  // element.className =
+  //  element.className.replace
+  //     ( /(?:^|\s)hidden(?!\S)/g , '' );
 };
 
 AppController.prototype.activate_ = function(element) {
-  element.className += ' active';
-  // element.classList.add('active');
+  // element.className += ' active';
+  element.classList.add('active');
 };
 
 AppController.prototype.deactivate_ = function(element) {
-  // element.classList.remove('active');
-  element.className =
-   element.className.replace
-      ( /(?:^|\s)active(?!\S)/g , '' );
+  element.classList.remove('active');
+  // element.className =
+  //  element.className.replace
+  //     ( /(?:^|\s)active(?!\S)/g , '' );
 };
 
 AppController.prototype.showIcons_ = function() {
